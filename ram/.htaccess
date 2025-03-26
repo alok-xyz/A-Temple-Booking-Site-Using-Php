@@ -1,0 +1,14 @@
+# Special rules for port 3000
+RewriteEngine On
+RewriteBase /
+
+# If accessing through port 3000
+RewriteCond %{SERVER_PORT} ^3000$
+# And file/directory doesn't exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Remove /ram prefix if present
+RewriteRule ^ram/(.*)$ $1 [L]
+
+# Handle direct access to index
+RewriteRule ^$ index.php [L] 

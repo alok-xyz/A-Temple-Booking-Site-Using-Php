@@ -1,0 +1,48 @@
+# /ram/admin/.htaccess
+DirectoryIndex login.php
+Options -Indexes
+
+# Redirect direct admin folder access to login
+RewriteEngine On
+RewriteBase /ram/admin/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^$ login.php [L]
+
+# Protect direct access to sensitive files
+<FilesMatch "\.(php|sql)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# /ram/.htaccess
+RewriteEngine On
+RewriteBase /ram/
+
+# Handle admin directory
+RewriteCond %{REQUEST_URI} ^/ram/admin/?$
+RewriteRule ^admin/?$ admin/login.php [L]
+
+# Protect config directory
+<IfModule mod_rewrite.c>
+    RewriteRule ^config/ - [F,L]
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
+
+# Handle errors
+ErrorDocument 404 /ram/404.php
+ErrorDocument 403 /ram/403.php
+ErrorDocument 500 /ram/500.php
+
+# If the file/directory doesn't exist, redirect to 404
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /ram/404.php [L]
+
+# Allow PHP files to be executed
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch> 
